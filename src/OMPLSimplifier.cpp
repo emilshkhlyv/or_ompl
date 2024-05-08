@@ -76,11 +76,11 @@ bool OMPLSimplifier::InitPlan(OpenRAVE::RobotBasePtr robot,
         using ompl::geometric::PathSimplifier;
 
         m_state_space = CreateStateSpace(robot, *m_parameters);
-        m_space_info = boost::make_shared<SpaceInformation>(m_state_space);
+        m_space_info = std::make_shared<SpaceInformation>(m_state_space);
         m_space_info->setStateValidityChecker(
                 boost::bind(&OMPLSimplifier::IsStateValid, this, _1));
         m_space_info->setup();
-        m_simplifier = boost::make_shared<PathSimplifier>(m_space_info);
+        m_simplifier = std::make_shared<PathSimplifier>(m_space_info);
         return true;
     } catch (std::runtime_error const &e) {
         RAVELOG_ERROR("IntPlan failed: %s\n", e.what());
@@ -95,7 +95,7 @@ bool OMPLSimplifier::InitPlan(OpenRAVE::RobotBasePtr robot, std::istream &input)
     return InitPlan(robot, params);
 }
 
-OpenRAVE::PlannerStatus OMPLSimplifier::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj)
+OpenRAVE::PlannerStatus OMPLSimplifier::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj, int planningoptions)
 {
     typedef ompl::base::ScopedState<RobotStateSpace> ScopedState;
 

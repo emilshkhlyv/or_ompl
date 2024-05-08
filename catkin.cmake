@@ -1,14 +1,18 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.10.2)
+
+
+set (CMAKE_CXX_STANDARD 17)
+find_package(catkin REQUIRED ompl cmake_modules openrave_catkin)
+find_package(Eigen3 REQUIRED)
+find_package(ompl REQUIRED)
 
 find_package(catkin REQUIRED cmake_modules openrave_catkin)
 catkin_package(
-    INCLUDE_DIRS include/
-    LIBRARIES ${PROJECT_NAME}
-    DEPENDS ompl eigen
+        INCLUDE_DIRS include/
+        LIBRARIES ${PROJECT_NAME}
+        DEPENDS OMPL EIGEN3
 )
-
 find_package(Boost REQUIRED COMPONENTS system)
-find_package(OMPL REQUIRED)
 find_package(TinyXML REQUIRED)
 find_package(OpenRAVE REQUIRED)
 find_package(Eigen REQUIRED)

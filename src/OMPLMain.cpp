@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <boost/format.hpp>
 #include <boost/function.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/algorithm/string.hpp>
 #include <openrave/plugin.h>
 #include "OMPLPlanner.h"
 #include "OMPLConversions.h"

@@ -1,5 +1,5 @@
 #include <TSR.h>
-#include <Eigen/Geometry>
+#include <eigen3/Eigen/Geometry>
 #include <ompl/util/RandomNumbers.h>
 #include <vector>
 

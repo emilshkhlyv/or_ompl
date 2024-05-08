@@ -67,7 +67,7 @@ namespace or_ompl {
 
     };
 
-    typedef boost::shared_ptr<RobotStateSpace> RobotStateSpacePtr;
+    typedef std::shared_ptr<RobotStateSpace> RobotStateSpacePtr;
 }
 
 #endif

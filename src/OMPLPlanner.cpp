@@ -109,7 +109,7 @@ bool OMPLPlanner::InitPlan(OpenRAVE::RobotBasePtr robot,
         }
 
         RAVELOG_DEBUG("Creating OMPL setup.\n");
-        m_simple_setup = boost::make_shared<ompl::geometric::SimpleSetup>(m_state_space);
+        m_simple_setup = std::make_shared<ompl::geometric::SimpleSetup>(m_state_space);
 
         RAVELOG_DEBUG("Setting initial configuration.\n");
         if (m_parameters->vinitialconfig.size() % num_dof != 0) {
@@ -158,7 +158,7 @@ bool OMPLPlanner::InitPlan(OpenRAVE::RobotBasePtr robot,
         }
 
         if(goal_chains.size() > 0) {
-            TSRGoal::Ptr goaltsr = boost::make_shared<TSRGoal>(m_simple_setup->getSpaceInformation(),
+            auto goaltsr = std::make_shared<TSRGoal>(m_simple_setup->getSpaceInformation(),
 															   goal_chains,
 															   robot);
             m_simple_setup->setGoal(goaltsr);
@@ -300,7 +300,7 @@ ompl::base::PlannerPtr OMPLPlanner::CreatePlanner(
     return planner;
 }
 
-OpenRAVE::PlannerStatus OMPLPlanner::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj)
+OpenRAVE::PlannerStatus OMPLPlanner::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj, int planningoptions)
 {
     if (!m_initialized) {
         RAVELOG_ERROR("Unable to plan. Did you call InitPlan?\n");
@@ -397,9 +397,9 @@ bool OMPLPlanner::GetParametersCommand(std::ostream &sout, std::istream &sin) co
     // a simple one-DOF state space and make a temporary planner instance.
     else {
         ompl::base::StateSpacePtr const state_space
-            = boost::make_shared<ompl::base::RealVectorStateSpace>(1);
+            = std::make_shared<ompl::base::RealVectorStateSpace>(1);
         ompl::base::SpaceInformationPtr const space_information 
-            = boost::make_shared<ompl::base::SpaceInformation>(state_space);
+            = std::make_shared<ompl::base::SpaceInformation>(state_space);
         planner.reset(m_planner_factory(space_information));
     }
 

@@ -1,7 +1,7 @@
 #ifndef OMPL_TSR_H_
 #define OMPL_TSR_H_
 
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include <boost/shared_ptr.hpp>
 
 namespace or_ompl {

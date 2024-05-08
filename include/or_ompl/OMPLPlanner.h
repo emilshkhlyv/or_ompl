@@ -56,7 +56,7 @@ public:
                           PlannerParametersConstPtr params);
     virtual bool InitPlan(OpenRAVE::RobotBasePtr robot, std::istream& input);
 
-    virtual OpenRAVE::PlannerStatus PlanPath (OpenRAVE::TrajectoryBasePtr ptraj);
+    virtual OpenRAVE::PlannerStatus PlanPath (OpenRAVE::TrajectoryBasePtr ptraj, int planningoptions=0);
 
     virtual PlannerParametersConstPtr GetParameters () const
     {

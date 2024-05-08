@@ -51,33 +51,30 @@ void OpenRAVEHandler::log(std::string const &text, ompl::msg::LogLevel level,
     switch (level) {
     case ompl::msg::LOG_DEBUG:
         if (openrave_level >= (int) OpenRAVE::Level_Debug) {
-            OpenRAVE::RavePrintfA_DEBUGLEVEL("[%s:%d] %s\n",
-                OpenRAVE::RaveGetSourceFilename(filename), line,
-                text.c_str());
+            OpenRAVE::RavePrintfA(("[%s:%d] %s\n",
+                OpenRAVE::RaveGetSourceFilename(filename), line,text.c_str()), 4);
         }
         break;
 
     case ompl::msg::LOG_INFO:
         if (openrave_level >= (int) OpenRAVE::Level_Info) {
-            OpenRAVE::RavePrintfA_INFOLEVEL("[%s:%d] %s\n",
-                OpenRAVE::RaveGetSourceFilename(filename), line,
-                text.c_str());
+            OpenRAVE::RavePrintfA(("[%s:%d] %s\n", OpenRAVE::RaveGetSourceFilename(filename), line, text.c_str()), 3);
         }
         break;
 
     case ompl::msg::LOG_WARN:
         if (openrave_level >= (int) OpenRAVE::Level_Warn) {
-            OpenRAVE::RavePrintfA_WARNLEVEL("[%s:%d] %s\n",
+            OpenRAVE::RavePrintfA(("[%s:%d] %s\n",
                 OpenRAVE::RaveGetSourceFilename(filename), line,
-                text.c_str());
+                text.c_str()), 2);
         }
         break;
 
     case ompl::msg::LOG_ERROR:
         if (openrave_level >= (int) OpenRAVE::Level_Error) {
-            OpenRAVE::RavePrintfA_ERRORLEVEL("[%s:%d] %s\n",
+            OpenRAVE::RavePrintfA(("[%s:%d] %s\n",
                 OpenRAVE::RaveGetSourceFilename(filename), line,
-                text.c_str());
+                text.c_str()), 1);
         }
         break;
 
@@ -113,7 +110,7 @@ RobotStateSpacePtr CreateStateSpace(OpenRAVE::RobotBasePtr const robot,
 
     std::vector<int> dof_indices = robot->GetActiveDOFIndices();
     const unsigned int num_dof = dof_indices.size();
-    RobotStateSpacePtr state_space = boost::make_shared<RobotStateSpace>(dof_indices);
+    RobotStateSpacePtr state_space = std::make_shared<RobotStateSpace>(dof_indices);
 
     RAVELOG_DEBUG("Setting joint limits.\n");
     std::vector<OpenRAVE::dReal> lowerLimits, upperLimits;
