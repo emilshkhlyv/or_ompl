@@ -324,6 +324,7 @@ OpenRAVE::PlannerStatus OMPLPlanner::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj,
                 collision_checker, OpenRAVE::CO_ActiveDOFs, false);
 
             // Call the planner.
+            RAVELOG_DEBUG("Maximum computation time: %f", m_parameters->m_timeLimit);
             m_simple_setup->solve(m_parameters->m_timeLimit);
         }
 
