@@ -331,10 +331,11 @@ OpenRAVE::PlannerStatus OMPLPlanner::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj,
         if (m_simple_setup->haveExactSolutionPath()) {
             ToORTrajectory(m_robot, m_simple_setup->getSolutionPath(), ptraj);
             planner_status = OpenRAVE::PS_HasSolution;
+            RAVELOG_DEBUG("Solution found in %f seconds\n", m_simple_setup->getLastPlanComputationTime());
         } else {
             planner_status = OpenRAVE::PS_Failed;
+            RAVELOG_DEBUG("No solution found in %f seconds\n", m_simple_setup->getLastPlanComputationTime());
         }
-
     } catch (std::runtime_error const &e) {
         RAVELOG_ERROR("Planning failed: %s\n", e.what());
         planner_status = OpenRAVE::PS_Failed;
@@ -342,7 +343,8 @@ OpenRAVE::PlannerStatus OMPLPlanner::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj,
     
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &toc);
     m_totalPlanningTime += (toc.tv_sec - tic.tv_sec) + 1.0e-9*(toc.tv_nsec - tic.tv_nsec);
-    
+    m_parameters->_sExtraParameters += "<TotalPlanningTime>" + std::to_string(m_simple_setup->getLastPlanComputationTime()) + "</TotalPlanningTime>"; 
+
     return planner_status;
 }
 
