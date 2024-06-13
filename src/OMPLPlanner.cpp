@@ -325,7 +325,7 @@ OpenRAVE::PlannerStatus OMPLPlanner::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj,
 
             // Call the planner.
             RAVELOG_DEBUG("Maximum computation time: %f", m_parameters->m_timeLimit);
-            m_simple_setup->solve(m_parameters->m_timeLimit);
+            m_simple_setup->solve(m_parameters->m_timeLimit);        
         }
 
         if (m_simple_setup->haveExactSolutionPath()) {
@@ -340,10 +340,35 @@ OpenRAVE::PlannerStatus OMPLPlanner::PlanPath(OpenRAVE::TrajectoryBasePtr ptraj,
         RAVELOG_ERROR("Planning failed: %s\n", e.what());
         planner_status = OpenRAVE::PS_Failed;
     }
+    // Convert the OpenRAVE trajectory into an OMPL path.
+    auto m_space_info = std::make_shared<ompl::base::SpaceInformation>(m_state_space);
+    ompl::geometric::PathGeometric path(m_space_info);
+    auto m_cspec = m_robot->GetActiveConfigurationSpecification();
+    size_t const num_dof = m_cspec.GetDOF();
+
+    RAVELOG_DEBUG("Create OMPL path with %d DOF and %d waypoints.\n",
+                  num_dof, ptraj->GetNumWaypoints());
+
+    for (size_t iwaypoint = 0; iwaypoint < ptraj->GetNumWaypoints(); ++iwaypoint) {
+        // Extract the OpenRAVE waypoint. Default to the current configuration
+        // for any missing DOFs.
+        std::vector<OpenRAVE::dReal> waypoint_openrave;
+        m_robot->GetActiveDOFValues(waypoint_openrave);
+        ptraj->GetWaypoint(iwaypoint, waypoint_openrave, m_cspec);
+
+        // Insert the waypoint into the OMPL path.
+        ompl::base::ScopedState<RobotStateSpace> waypoint_ompl(m_space_info);
+        for (size_t idof = 0; idof < num_dof; ++idof) {
+            waypoint_ompl[idof] = waypoint_openrave[idof];
+        }
+        path.append(waypoint_ompl.get());
+    }
+    double const length = path.length();
     
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &toc);
     m_totalPlanningTime += (toc.tv_sec - tic.tv_sec) + 1.0e-9*(toc.tv_nsec - tic.tv_nsec);
     m_parameters->_sExtraParameters += "<TotalPlanningTime>" + std::to_string(m_simple_setup->getLastPlanComputationTime()) + "</TotalPlanningTime>"; 
+    m_parameters->_sExtraParameters += "<PathLength>" + std::to_string(length) + "</PathLength>"; 
 
     return planner_status;
 }
